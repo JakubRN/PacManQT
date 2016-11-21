@@ -20,3 +20,10 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     gamearea.h \
     level.h
+
+RESOURCES += \
+    res.qrc
+
+DISTFILES +=
+
+FORMS +=

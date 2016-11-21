@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
     //resize(500,300);
     setWhatsThis(tr("My implementation of pac-man game"));
     setWindowIconText("LOL");
+    setStyleSheet("color: blue; background-color: ffffff;"
+                  );
 }
 
 MainWindow::~MainWindow()

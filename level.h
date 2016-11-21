@@ -21,6 +21,7 @@ class Level : public QWidget
     QLCDNumber *scoreLcd;
 public:
     explicit Level(QWidget *parent = 0);
+    QPushButton *initButton(const char *myString);
 
 signals:
 
