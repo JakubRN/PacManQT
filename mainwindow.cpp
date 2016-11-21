@@ -7,6 +7,11 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    setStyleSheet("background-color: #0A2038;"
+                             "border-width: 0px;"
+                             "padding: 0px;"
+                             "margin: 0px;"
+                  );
     showFullScreen();
     //qDebug() << width() << height();
     //setFocusPolicy(Qt::StrongFocus);
@@ -16,8 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     //resize(500,300);
     setWhatsThis(tr("My implementation of pac-man game"));
     setWindowIconText("LOL");
-    setStyleSheet("color: blue; background-color: ffffff;"
-                  );
+
 }
 
 MainWindow::~MainWindow()

@@ -5,14 +5,16 @@
 Level::Level(QWidget *parent) : QWidget(parent)
 {
     //setFrameStyle(QFrame::StyledPanel);
-    setStyleSheet("color: blue; background-color: ffffff;"
+    setStyleSheet("border-width: 0px;"
+                  "padding: 0px;"
+                  "margin: 0px;"
 
                   );
 
 
     scoreLcd = new QLCDNumber(5);
     scoreLcd->setFrameShape(QFrame::NoFrame);
-    scoreLcd->setStyleSheet("color: #ffffff");
+    scoreLcd->setStyleSheet("color: rgb(255, 230, 255)");
     board = new GameArea;
 
     pause = initButton("Pause");
@@ -37,17 +39,20 @@ Level::Level(QWidget *parent) : QWidget(parent)
 QPushButton *Level::initButton(const char *myString)
 {
     QPushButton *button = new QPushButton(tr(myString));
-    button->setFocusPolicy(Qt::NoFocus);
-    button->setStyleSheet("background-color: rgb(160, 0, 0);"
-                         "color:rgb(0, 0, 80) ;"
+    button->setFocusPolicy(Qt::StrongFocus);
+    button->setStyleSheet("background-color: #265285;"
+                         "color: rgb(255, 230, 255) ;"
                          "border-style: outset;"
-                         "border-width: 2px;"
-                         "border-radius: 10px;"
-                         "border-color: rgb(80, 0, 0);"
+                         "border-width: 5px;"
+                         "border-radius: 15px;"
+                         "border-color: #38280A;"
                          "font: bold 14px;"
                          "min-width: 10em;"
                          "padding: 6px;"
-                          "selection-color: yellow;"
+                         "pressed {"
+                         "color: yellow;"
+                         "background-color: blue;"
+                         "}"
                           );
     return button;
 }
@@ -56,8 +61,8 @@ QLabel *Level::getLabel(QString &input)
 {
     QLabel *lbl = new QLabel(input);
     lbl->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    lbl->setFont(QFont("font: Times New Roman", 24, QFont::Light));
+    lbl->setFont(QFont("font: Times New Roman", 24, QFont::Bold));
     lbl->setScaledContents(true);
-    lbl->setStyleSheet("color: #ffffff");
+    lbl->setStyleSheet("color: #855500");
     return lbl;
 }
