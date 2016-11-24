@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/images">
         <file>vader.jpg</file>
+        <file>Pac-man.gif</file>
     </qresource>
 </RCC>

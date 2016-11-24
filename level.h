@@ -13,6 +13,7 @@
 class Level : public QWidget
 {
     Q_OBJECT
+    QGridLayout *layout;
     QPushButton *pause;
     QPushButton *start;
     QPushButton *mainMenu;
@@ -20,12 +21,13 @@ class Level : public QWidget
     QLabel *getLabel(QString &input);
     QLCDNumber *scoreLcd;
 public:
-    explicit Level(QWidget *parent = 0);
+    explicit Level(int w, int h, QWidget *parent = 0);
     QPushButton *initButton(const char *myString);
 
 signals:
 
 public slots:
+    void pauseGame();
 
 };
 

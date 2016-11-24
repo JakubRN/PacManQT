@@ -3,9 +3,15 @@
 
 #include <QWidget>
 #include <QFrame>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
+#include <QImage>
 
-class GameArea : public QFrame
+class GameArea : public QGraphicsView
 {
+    QGraphicsScene * mainScene;
+    QGraphicsPixmapItem *Pacman;
 public:
     explicit GameArea(QWidget *parent = 0);
 };
