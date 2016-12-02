@@ -8,12 +8,12 @@
 #include <QGraphicsPixmapItem>
 #include <QImage>
 
-class GameArea : public QGraphicsView
+class GameArea : public QGraphicsScene
 {
-    QGraphicsScene * mainScene;
     QGraphicsPixmapItem *Pacman;
 public:
-    explicit GameArea(QWidget *parent = 0);
+    explicit GameArea(int w, int h, QWidget *parent = 0);
+
 };
 
 #endif // GAMEAREA_H

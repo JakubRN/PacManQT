@@ -14,29 +14,46 @@ Level::Level(int w, int h, QWidget *parent) : QWidget(parent)
                   );
 
     qDebug() << this->width() << this->height();
-    scoreLcd = new QLCDNumber(5);
-    scoreLcd->setFrameShape(QFrame::NoFrame);
-    scoreLcd->setStyleSheet("color: rgb(255, 230, 255)");
-    board = new GameArea(parent);
-    qDebug() << board->height() <<"\t\t" << board->width();
+
+    board = new GameArea(h*15/16 - 10, h*15/16 - 10, this);
+    qDebug() << board->width() <<"\t\t" << board->height() << w;
+
+    QGraphicsView *view = new QGraphicsView(board);
+    view->setFixedSize(h*15/16, h*15/16);
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setStyleSheet("background-color: #0B4485;"
+                            "background-clip: padding;"
+                            "color: #0B4485;"
+                            "border-style: groove ;"
+                            "border-radius: 5px;"
+                            "border-width: 0px;"
+                            "margin: 0px;"
+                            );
+
     pause = initButton("Pause");
     start = initButton("Start");
     mainMenu = initButton("Main Menu");
+    scoreLcd = new QLCDNumber(5);
+    scoreLcd->setFrameShape(QFrame::NoFrame);
+    scoreLcd->setStyleSheet("color: rgb(255, 230, 255)");
 
     layout = new QGridLayout(this);
     layout->addWidget(getLabel(tr("SCORE:")), 0, 0);
     layout->addWidget(scoreLcd, 1, 0);
 
-    layout->addWidget(board, 0, 1, 6, 6);
+    layout->addWidget(view, 0, 1, 6, 6);
 
     layout->addWidget(getLabel(tr("LIVES:")), 0, 7 );
-
     layout->addWidget(getLabel(tr("OPTIONS:")), 2, 7 );
     layout->addWidget(pause, 3, 7);
     layout->addWidget(start, 4, 7);
     layout->addWidget(mainMenu, 5, 7);
+
     connect(pause, SIGNAL(pressed()), this, SLOT(pauseGame()) );
     setLayout(layout);
+    qDebug() << view->width() << view->height() << "My view";
+    qDebug() << board->width() << board->height() << "My board";
 }
 
 QPushButton *Level::initButton(const char *myString)

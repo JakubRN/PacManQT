@@ -9,6 +9,7 @@
 #include <QFont>
 #include <QSizePolicy>
 #include "gamearea.h"
+#include <vector>
 
 class Level : public QWidget
 {

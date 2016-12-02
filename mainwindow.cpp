@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include<QDebug>
-
-
+#include <QStatusBar>
+#define SIZE (1280, 960)
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,8 +12,11 @@ MainWindow::MainWindow(QWidget *parent)
                              "padding: 0px;"
                              "margin: 0px;"
                   );
-    showFullScreen();
-    //resize(800, 600);
+
+    //showFullScreen();
+    resize(1280, 960);
+    this->setMinimumSize(this->size());
+    this->setMaximumSize(this->size());
     //setFocusPolicy(Qt::StrongFocus);
     currentLevel = new Level(this->width(), this->height(), this);
     qDebug() << currentLevel->width() << currentLevel->height();

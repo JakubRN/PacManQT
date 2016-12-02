@@ -3,31 +3,64 @@
 #include <QGraphicsRectItem>
 #include <QPixmap>
 #include <QDebug>
+#include "wall.h"
+#include "gamearea.h"
+#define SQUARE_SIZE (int)(h/(double)26)
+#define PACMAN_IMAGE_WIDTH 200
 
-GameArea::GameArea(QWidget *parent) : QGraphicsView(parent)
+GameArea::GameArea(int w, int h, QWidget *parent) : QGraphicsScene(parent)
 {
-    setStyleSheet("background-color: #0B4485;"
-                  "    background-clip: padding;"
-                  "color: #0B4485;"
-                  "border-style: groove ;"
-                  "border-radius: 5px;"
-                  "border-width: 0px;"
-                  "margin: 0px;"
-                  "padding:10px;"
-                  );
-    qDebug() << this->width() << this->height();
-    mainScene = new QGraphicsScene();
-    //mainScene->setSceneRect(0, 0, this->width(), this->height());
-    //mainScene->setBackgroundBrush(QBrush(QImage(":/images/vader.jpg").scaled(500, 5)));
-    setScene(mainScene);
-    Pacman = new QGraphicsPixmapItem();
+    char board[26][26] =   {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},//1
+                            {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},//2
+                            {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},//3
+                            {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},//4
+                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},//5
+                            {1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1},//6
+                            {1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1},//7
+                            {1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1},//8
+                            {1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1},//9
+                            {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},//10
+                            {0, 1, 0, 0, 0, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 0, 0, 0, 1, 0},//11
+                            {0, 1, 1, 1, 0, 0, 1, 0, 0, 3, 0, 0, 3, 3, 0, 0, 3, 0, 0, 1, 0, 0, 1, 1, 1, 0},//12
+                            {0, 0, 0, 1, 0, 0, 1, 0, 0, 3, 0, 3, 3, 3, 3, 0, 3, 0, 0, 1, 0, 0, 1, 0, 0, 0},//13
+                            {3, 3, 3, 1, 1, 1, 1, 3, 3, 3, 0, 3, 3, 3, 3, 0, 3, 3, 3, 1, 1, 1, 1, 3, 3, 3},//14
+                            {0, 0, 0, 1, 0, 0, 1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 0, 0, 1, 0, 0, 0},//15
+                            {0, 1, 1, 1, 0, 0, 1, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 1, 0, 0, 1, 1, 1, 0},//16
+                            {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},//17
+                            {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},//18
+                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},//19
+                            {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1},//20
+                            {1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1},//21
+                            {1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1},//22
+                            {1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1},//23
+                            {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},//24
+                            {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},//25
+                            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};//26
+    setSceneRect(-5,-5, w + 5, h + 5);
+    qDebug() << this->width() << "spucha"<< SQUARE_SIZE << this->height();
 
+    Pacman = new QGraphicsPixmapItem();
     Pacman->setPixmap(QPixmap(":/images/Pac-man.gif"));
-    //Pacman->setPos((mainScene->width() - Pacman->pixmap().width())/2, mainScene->height() - Pacman->pixmap().height() - 50);
-    QGraphicsRectItem *rect = new QGraphicsRectItem(0, 0, 1000, 500);
-    //rect->setPos(300, 50);
-    mainScene->addItem(Pacman);
-    mainScene->addItem(rect);
-    QGraphicsRectItem *rect2 = new QGraphicsRectItem(0, 500, 500, 500);
-    mainScene->addItem(rect2);
+    Pacman->setPos(0,0);
+    Pacman->setScale((double)SQUARE_SIZE/PACMAN_IMAGE_WIDTH);
+
+    GameObject *gameObject[26][26];
+    for(unsigned int x = 0; x < 26; x++) {
+        for(unsigned y = 0; y < 26; y++) {
+            if(board[y][x] == 0){
+            Wall *temp = new Wall(x, y, SQUARE_SIZE);
+            gameObject[x][y] = temp;
+            addItem(temp);
+            }
+//            if(board[y][x] == 1) {
+//                QGraphicsEllipseItem *temp = new QGraphicsEllipseItem(SQUARE_SIZE * x + SQUARE_SIZE/2, SQUARE_SIZE * y + SQUARE_SIZE/2,
+//                                                                        SQUARE_SIZE/4, SQUARE_SIZE/4);
+//                temp->setBrush((*new QBrush(Qt::yellow)));
+//                gameObject[x][y] = temp;
+//                addItem(gameObject[x][y]);
+//            }
+        }
+    }
+    addItem(Pacman);
+
 }

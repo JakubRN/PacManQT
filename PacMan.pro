@@ -15,15 +15,20 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gamearea.cpp \
-    level.cpp
+    level.cpp \
+    gameobject.cpp \
+    wall.cpp
 
 HEADERS  += mainwindow.h \
     gamearea.h \
-    level.h
+    level.h \
+    gameobject.h \
+    wall.h
 
 RESOURCES += \
     res.qrc
 
-DISTFILES +=
+DISTFILES += \
+    boardtxt
 
 FORMS +=
