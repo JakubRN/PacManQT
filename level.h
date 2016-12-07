@@ -21,6 +21,7 @@ class Level : public QWidget
     GameArea * board;
     QLabel *getLabel(QString &input);
     QLCDNumber *scoreLcd;
+    unsigned int pacmanLifes;
 public:
     explicit Level(int w, int h, QWidget *parent = 0);
     QPushButton *initButton(const char *myString);

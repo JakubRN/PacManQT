@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     gamearea.cpp \
     level.cpp \
     gameobject.cpp \
-    wall.cpp
+    wall.cpp \
+    board.cpp
 
 HEADERS  += mainwindow.h \
     gamearea.h \
@@ -28,7 +29,6 @@ HEADERS  += mainwindow.h \
 RESOURCES += \
     res.qrc
 
-DISTFILES += \
-    boardtxt
+DISTFILES +=
 
 FORMS +=

@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMaximumSize(this->size());
     //setFocusPolicy(Qt::StrongFocus);
     currentLevel = new Level(this->width(), this->height(), this);
-    qDebug() << currentLevel->width() << currentLevel->height();
+//    qDebug() << currentLevel->width() << currentLevel->height();
     currentLevel->setStyleSheet("QPushButton:pressed {"
                                  "color: yellow;"
                                  "background-color: blue;"
@@ -29,9 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
                                   "QPushButton:checked { color: red; }");
     setCentralWidget(currentLevel);
     setWindowTitle(tr("PAC-MAN"));
-    //resize(500,300);
     setWhatsThis(tr("My implementation of pac-man game"));
-    setWindowIconText("LOL");
+    setWindowIconText("-");
 }
 
 MainWindow::~MainWindow()
