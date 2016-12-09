@@ -73,5 +73,6 @@ GameArea::GameArea(int w, int h, QWidget *parent) : QGraphicsScene(parent)
         }
     }
     MovingObject *test = new MovingObject(0, 0, SQUARE_SIZE);
+    qDebug() << boardArea[0][0]->x() << boardArea[1][0]->x() << boardArea[1][1]->x();
     addItem(test);
 }

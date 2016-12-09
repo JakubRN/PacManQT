@@ -8,14 +8,14 @@ SuperCoin::SuperCoin(unsigned int x, unsigned int y, int size, GameObject *paren
 
 QRectF SuperCoin::boundingRect() const
 {
-    return QRectF(size * xCoordinate + size/2 - RADIUS/2, size * yCoordinate + size/2 - RADIUS/2,
+    return QRectF(size/2 - RADIUS/2, size/2 - RADIUS/2,
                   RADIUS, RADIUS);
 }
 
 void SuperCoin::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush((*new QBrush(Qt::yellow)));
-    painter->drawEllipse(size * xCoordinate + size/2 - RADIUS/2, size * yCoordinate + size/2 - RADIUS/2,
+    painter->drawEllipse( size/2 - RADIUS/2, size/2 - RADIUS/2,
                      RADIUS, RADIUS);
 
 }

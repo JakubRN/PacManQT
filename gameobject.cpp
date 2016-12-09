@@ -4,12 +4,12 @@ GameObject::GameObject(unsigned int x, unsigned int y, unsigned int size, QGraph
     xCoordinate(x), yCoordinate(y), size(size), QGraphicsItem(parent)
 {
     setVisible(true);
-//    setPos(x, y);
+    setPos(x * size, y * size);
 }
 QRectF GameObject::boundingRect() const{
-    return QRectF(xCoordinate * size, yCoordinate * size, size, size);
+    return QRectF(0, 0, size, size);
 }
 void GameObject::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget) {
     painter->setBrush(QBrush(Qt::white));
-    painter->drawRect(QRectF(xCoordinate * size, yCoordinate * size, size, size));
+    painter->drawRect(QRectF(0, 0, size, size));
 }

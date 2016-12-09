@@ -4,7 +4,7 @@
 #include <gamearea.h>
 extern char board[26][26];
 MovingObject::MovingObject(unsigned int x, unsigned int y, unsigned int size, QGraphicsItem *parent) : GameObject(x, y, size, parent),
-    timeDelay((double)300 / (size)), currentDirection(right), tempX(0), tempY(0), timer(new QTimer),
+    timeDelay((double)300 / (size)), currentDirection(down), tempX(0), tempY(0), timer(new QTimer),
     xDirection(0), yDirection(0)
 {
     setCacheMode(QGraphicsItem::ItemCoordinateCache);
@@ -15,13 +15,13 @@ MovingObject::MovingObject(unsigned int x, unsigned int y, unsigned int size, QG
 
 QRectF MovingObject::boundingRect() const
 {
-    return QRect(xCoordinate*size + tempX, yCoordinate*size + tempY, size, size);
+    return QRect(0, 0, size, size);
 }
 
 void MovingObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setBrush(*new QBrush(Qt::white));
-    painter->drawRect(xCoordinate*size + tempX, yCoordinate*size + tempY, size, size);
+    painter->drawRect(0, 0, size, size);
 }
 
 void MovingObject::move()
@@ -50,6 +50,7 @@ void MovingObject::move()
     }
     tempX += xDirection;
     tempY += yDirection;
+    setPos(x() + xDirection, y() + yDirection);
     if(tempX == size){
         tempX = 0;
         xCoordinate += 1;
@@ -58,5 +59,5 @@ void MovingObject::move()
         tempY = 0;
         yCoordinate += yDirection;
     }
-    //update();
+    update();
 }
