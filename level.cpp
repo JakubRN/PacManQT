@@ -2,27 +2,28 @@
 #include <QSizePolicy>
 #include <QStyle>
 #include <QDebug>
+
+#define BOARD_SIZE 26
+#define SQUARE_SIZE (int)(h/(double)BOARD_SIZE)
+#define PACMAN_IMAGE_WIDTH 200
 #define BOX_SIZE (int)(h*(double)19/20)
 
-Level::Level(int w, int h, QWidget *parent) : QWidget(parent)
+Level::Level(int w, int h, QWidget *parent) : QWidget(parent), pacmanLifes(3),
+    pause(initButton("Pause")), start(initButton("Start")), mainMenu(initButton("mainMenu")),
+    scoreLcd(new QLCDNumber(5, this)), layout(new QGridLayout(this)),
+    board(new GameArea(BOX_SIZE - 10, BOX_SIZE - 10, this)), view(new QGraphicsView(board)),
+    lifeBoxes(new QHBoxLayout(this))
 {
     //setFrameStyle(QFrame::StyledPanel);
     resize(w, h);
     setStyleSheet("border-width: 0px;"
                   "padding: 0px;"
                   "margin: 0px;"
-
                   );
 
-    qDebug() << this->width() << this->height();
-
-    board = new GameArea(BOX_SIZE - 10, BOX_SIZE - 10, this);
-    qDebug() << board->width() <<"\t\t" << board->height() << w;
-
-    QGraphicsView *view = new QGraphicsView(board);
     view->setFixedSize(BOX_SIZE, BOX_SIZE);
-    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setStyleSheet("background-color: #0B4485;"
                             "background-clip: padding;"
                             "color: #0B4485;"
@@ -32,36 +33,24 @@ Level::Level(int w, int h, QWidget *parent) : QWidget(parent)
                             "margin: 0px;"
                             );
 
-    pause = initButton("Pause");
-    start = initButton("Start");
-    mainMenu = initButton("Main Menu");
-    scoreLcd = new QLCDNumber(5, this);
     scoreLcd->setFrameShape(QFrame::NoFrame);
     scoreLcd->setStyleSheet("color: rgb(255, 230, 255)");
-//    QHBoxLayout *lifes = new QHBoxLayout(this);
-//    for(unsigned int i = 0; i < pacmanLifes; i++) {
-//        QWidget *tempPacman = new QWidget();
-//        tempPacman->setStyleSheet("background-image::/images/Pac-man.gif");
-//        lifes->addWidget(tempPacman);
-//    }
-    layout = new QGridLayout(this);
-    layout->addWidget(getLabel(tr("SCORE:")), 0, 0);
-    layout->addWidget(scoreLcd, 1, 0);
 
-    layout->addWidget(view, 0, 1, 6, 1);
+    for(unsigned int i = 0; i < pacmanLifes; i++) {
+        QWidget *tempPacman = new QWidget(this);
+        tempPacman->setMaximumSize(SQUARE_SIZE, SQUARE_SIZE);
+        tempPacman->setMaximumSize(SQUARE_SIZE, SQUARE_SIZE);
+        tempPacman->setStyleSheet("QWidget {border-image: url(:/images/Pac-man.gif) 0 0 0 0 stretch stretch;}");
+        lifeBoxes->addWidget(tempPacman);
+    }
+
+    createLayout();
     layout->setColumnMinimumWidth(1, BOX_SIZE);
+    setLayout(layout);
 
-    layout->addWidget(getLabel(tr("LIVES:")), 0, 2 );
-//    layout->addLayout(lifes, 1, 2);
-    layout->addWidget(getLabel(tr("OPTIONS:")), 2, 2 );
-    layout->addWidget(pause, 3, 2);
-    layout->addWidget(start, 4, 2);
-    layout->addWidget(mainMenu, 5, 2);
 
     connect(pause, SIGNAL(pressed()), this, SLOT(pauseGame()) );
-    setLayout(layout);
-    qDebug() << view->width() << view->height() << "My view";
-    qDebug() << board->width() << board->height() << "My board";
+
 }
 
 QPushButton *Level::initButton(const char *myString)
@@ -94,4 +83,27 @@ QLabel *Level::getLabel(QString &input)
     lbl->setScaledContents(true);
     lbl->setStyleSheet("color: #855500");
     return lbl;
+}
+
+void Level::createLayout()
+{
+    layout->addWidget(getLabel(tr("SCORE:")), 1, 0);
+    layout->addWidget(scoreLcd, 2, 0);
+
+    layout->addWidget(view, 0, 1, 6, 1);
+
+    QVBoxLayout *tempLayout2 = new QVBoxLayout;
+    tempLayout2->addWidget(getLabel(tr("LIVES:")));
+    tempLayout2->addLayout(lifeBoxes);
+    tempLayout2->addWidget(getLabel(tr("OPTIONS:")));
+    tempLayout2->addWidget(pause);
+    tempLayout2->addWidget(start);
+    tempLayout2->addWidget(mainMenu);
+    layout->addLayout(tempLayout2, 0, 2, 6, 1);
+//    layout->addWidget(getLabel(tr("LIVES:")), 0, 2 );
+//    layout->addLayout(lifeBoxes, 1, 2);
+//    layout->addWidget(getLabel(tr("OPTIONS:")), 2, 2 );
+//    layout->addWidget(pause, 3, 2);
+//    layout->addWidget(start, 4, 2);
+//    layout->addWidget(mainMenu, 5, 2);
 }

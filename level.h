@@ -1,6 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include <Qt>
 #include <QWidget>
 #include <QPushButton>
 #include <QLCDNumber>
@@ -10,18 +11,23 @@
 #include <QSizePolicy>
 #include "gamearea.h"
 #include <vector>
+#include <QPalette>
 
 class Level : public QWidget
 {
     Q_OBJECT
-    QGridLayout *layout;
+    unsigned int pacmanLifes;
     QPushButton *pause;
     QPushButton *start;
     QPushButton *mainMenu;
-    GameArea * board;
-    QLabel *getLabel(QString &input);
     QLCDNumber *scoreLcd;
-    unsigned int pacmanLifes;
+    QGridLayout *layout;
+    GameArea * board;
+    QGraphicsView *view;
+    QHBoxLayout *lifeBoxes;
+
+    QLabel *getLabel(QString &input);
+    void createLayout();
 public:
     explicit Level(int w, int h, QWidget *parent = 0);
     QPushButton *initButton(const char *myString);

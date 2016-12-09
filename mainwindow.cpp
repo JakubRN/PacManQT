@@ -2,7 +2,8 @@
 #include<QDebug>
 #include <QStatusBar>
 #define SIZE (1280, 960)
-
+#include <QApplication>
+#include <QDesktopWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,12 +15,13 @@ MainWindow::MainWindow(QWidget *parent)
                   );
 
     //showFullScreen();
-    resize(1280, 960);
+    resize(1280, 900);
     this->setMinimumSize(this->size());
     this->setMaximumSize(this->size());
-    //setFocusPolicy(Qt::StrongFocus);
+    QRect screen = QApplication::desktop()->screenGeometry();
     currentLevel = new Level(this->width(), this->height(), this);
-//    qDebug() << currentLevel->width() << currentLevel->height();
+
+
     currentLevel->setStyleSheet("QPushButton:pressed {"
                                  "color: yellow;"
                                  "background-color: blue;"

@@ -18,13 +18,18 @@ SOURCES += main.cpp\
     level.cpp \
     gameobject.cpp \
     wall.cpp \
-    board.cpp
+    coin.cpp \
+    supercoin.cpp \
+    movingobject.cpp
 
 HEADERS  += mainwindow.h \
     gamearea.h \
     level.h \
     gameobject.h \
-    wall.h
+    wall.h \
+    coin.h \
+    supercoin.h \
+    movingobject.h
 
 RESOURCES += \
     res.qrc

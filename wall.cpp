@@ -1,6 +1,5 @@
 #include "wall.h"
-#include <QBrush>
-#include <QPen>
+
 #include "gamearea.h"
 extern char board[26][26];
 Wall::Wall(unsigned int x, unsigned int y, int size, GameObject *parent) : GameObject(x, y, size, parent)
@@ -8,9 +7,14 @@ Wall::Wall(unsigned int x, unsigned int y, int size, GameObject *parent) : GameO
 
 }
 
+QRectF Wall::boundingRect() const
+{
+    return QRectF(xCoordinate * size, yCoordinate * size, size, size);
+}
+
 void Wall::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setPen(QPen(QBrush(Qt::black), 1));
+    painter->setPen(QPen(QBrush(Qt::gray), 1));
     painter->setBrush(*new QBrush(Qt::black));
     int tempX, tempY, tempDestX, tempDestY;
     if(xCoordinate > 0) {
