@@ -8,14 +8,12 @@
 #include "coin.h"
 #include "supercoin.h"
 #include "movingobject.h"
-
+#include "pacman.h"
 #define SUPERCOIN 4
 #define WALL 0
 #define COIN 1
 #define EMPTY 3
 #define BOARD_SIZE 26
-#define SQUARE_SIZE (int)(h/(double)BOARD_SIZE)
-#define PACMAN_IMAGE_WIDTH 200
 char board[BOARD_SIZE][BOARD_SIZE] =   {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},//1
                                         {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},//2
                                         {4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4},//3
@@ -42,37 +40,35 @@ char board[BOARD_SIZE][BOARD_SIZE] =   {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 
                                         {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},//24
                                         {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},//25
                                         {1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1}};//26
-GameArea::GameArea(int w, int h, QWidget *parent) : QGraphicsScene(parent)
+GameArea::GameArea(int w, int h, QWidget *parent) : QGraphicsScene(parent),SQUARE_SIZE((int)(h/(double)BOARD_SIZE)),
+    mainPacman(new Pacman(0, 0, SQUARE_SIZE))
 {
 
     setSceneRect(-5,-5, w + 5, h + 5);
-
-    Pacman = new QGraphicsPixmapItem();
-    Pacman->setPixmap(QPixmap(":/images/Pac-man.gif"));
-    Pacman->setScale((double)SQUARE_SIZE/PACMAN_IMAGE_WIDTH);
-    Pacman->setPos(0,0);
-    addItem(Pacman);
 
     for(unsigned int x = 0; x < BOARD_SIZE; x++) {
         for(unsigned y = 0; y < BOARD_SIZE; y++) {
             switch(board[y][x]) {
             case WALL:
                 boardArea[x][y] = new Wall(x, y, SQUARE_SIZE);
-                addItem(boardArea[x][y]);
                 break;
             case COIN:
                 boardArea[x][y] = new Coin(x, y, SQUARE_SIZE);
-                addItem(boardArea[x][y]);
                 break;
             case SUPERCOIN:
                 boardArea[x][y] = new SuperCoin(x, y, SQUARE_SIZE);
-                addItem(boardArea[x][y]);
                 break;
+            default:
+                boardArea[x][y] = nullptr;
             }
-            //addItem(boardArea[x][y]); why the fuck not
+            if(boardArea[x][y] != nullptr) {
+                boardArea[x][y]->setAcceptedMouseButtons(0);
+                addItem(boardArea[x][y]);
+            }
         }
     }
-    MovingObject *test = new MovingObject(0, 0, SQUARE_SIZE);
-    qDebug() << boardArea[0][0]->x() << boardArea[1][0]->x() << boardArea[1][1]->x();
-    addItem(test);
+    addItem(mainPacman);
+    mainPacman->setFocus();
+    mainPacman->grabKeyboard();
+    mainPacman->grabMouse();
 }

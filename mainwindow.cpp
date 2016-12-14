@@ -14,13 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
                              "margin: 0px;"
                   );
 
-    //showFullScreen();
-    resize(1280, 900);
+    showFullScreen();
+    //resize(1280, 900);
+    //QRect screen = QApplication::desktop()->screenGeometry();
+    //resize(screen.width()/2, screen.height()/2);
     this->setMinimumSize(this->size());
     this->setMaximumSize(this->size());
-    QRect screen = QApplication::desktop()->screenGeometry();
-    currentLevel = new Level(this->width(), this->height(), this);
 
+    currentLevel = new Level(this->width(), this->height(), this);
 
     currentLevel->setStyleSheet("QPushButton:pressed {"
                                  "color: yellow;"

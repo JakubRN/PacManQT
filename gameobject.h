@@ -8,6 +8,7 @@
 #include <QBrush>
 #include <QPen>
 
+
 class GameObject : public QGraphicsItem
 {
 
@@ -16,7 +17,7 @@ public:
     unsigned int yCoordinate;
     unsigned int size;
     GameObject(unsigned int x, unsigned int y, unsigned int size, QGraphicsItem *parent = 0);
-    virtual QRectF boundingRect() const = 0;
+    virtual QRectF boundingRect() const;
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0) = 0;
 };
 

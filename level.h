@@ -28,13 +28,15 @@ class Level : public QWidget
 
     QLabel *getLabel(QString &input);
     void createLayout();
+    int Score;
 public:
     explicit Level(int w, int h, QWidget *parent = 0);
     QPushButton *initButton(const char *myString);
 
 signals:
-
+    void coinWasEaten();
 public slots:
+    void increaseScore();
     void pauseGame();
 
 };

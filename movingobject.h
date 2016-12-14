@@ -6,6 +6,9 @@
 class MovingObject :  public QObject, public GameObject
 {
     Q_OBJECT
+    int tempX, tempY;
+    int xDirection, yDirection;
+protected:
     enum possibleDirections {
         left = 0,
         right = 1,
@@ -14,13 +17,14 @@ class MovingObject :  public QObject, public GameObject
     };
     double timeDelay;
     possibleDirections currentDirection;
-    int tempX, tempY;
-    QTimer *timer;
-    int xDirection, yDirection;
+    possibleDirections nextDirection;
+    QTimer *objectMoveTimer;
+    int sizeShift;
 public:
     MovingObject(unsigned int x, unsigned int y, unsigned int size, QGraphicsItem *parent = 0);
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
+    void manageDirections();
 public slots:
     void move();
 };

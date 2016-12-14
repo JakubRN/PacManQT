@@ -7,14 +7,9 @@ Wall::Wall(unsigned int x, unsigned int y, int size, GameObject *parent) : GameO
 
 }
 
-QRectF Wall::boundingRect() const
-{
-    return QRectF(0, 0, size, size);
-}
-
 void Wall::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setPen(QPen(QBrush(Qt::gray), 1));
+    painter->setPen(QPen(QBrush(Qt::black), 0));
     painter->setBrush(*new QBrush(Qt::black));
     int tempX, tempY, tempDestX, tempDestY;
     if(xCoordinate > 0) {

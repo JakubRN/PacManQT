@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     wall.cpp \
     coin.cpp \
     supercoin.cpp \
-    movingobject.cpp
+    movingobject.cpp \
+    pacman.cpp
 
 HEADERS  += mainwindow.h \
     gamearea.h \
@@ -29,11 +30,15 @@ HEADERS  += mainwindow.h \
     wall.h \
     coin.h \
     supercoin.h \
-    movingobject.h
+    movingobject.h \
+    pacman.h
 
 RESOURCES += \
     res.qrc
 
-DISTFILES +=
+DISTFILES += \
+    pacman.rc
+
+RC_FILE = pacman.rc
 
 FORMS +=
