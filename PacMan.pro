@@ -14,24 +14,24 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    gamearea.cpp \
     level.cpp \
     gameobject.cpp \
     wall.cpp \
     coin.cpp \
     supercoin.cpp \
     movingobject.cpp \
-    pacman.cpp
+    pacman.cpp \
+    ghost.cpp
 
 HEADERS  += mainwindow.h \
-    gamearea.h \
     level.h \
     gameobject.h \
     wall.h \
     coin.h \
     supercoin.h \
     movingobject.h \
-    pacman.h
+    pacman.h \
+    ghost.h
 
 RESOURCES += \
     res.qrc

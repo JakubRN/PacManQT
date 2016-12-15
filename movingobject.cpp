@@ -1,14 +1,12 @@
 #include "movingobject.h"
 #include <QThread>
 #include <cmath>
-#include <gamearea.h>
 #include <QDebug>
-#include <set>
-#include "coin.h"
-extern char board[26][26];
+#include <level.h>
+extern char boolBoard[26][26];
 MovingObject::MovingObject(unsigned int x, unsigned int y, unsigned int size, QGraphicsItem *parent) : GameObject(x, y, size, parent),
-    timeDelay((double)500 / (size)), tempX(0), tempY(0), xDirection(0), yDirection(0), currentDirection(right), objectMoveTimer(new QTimer()),
-    sizeShift(5), nextDirection(down)
+    timeDelay((double)200 / (size)), tempX(0), tempY(0), xDirection(0), yDirection(-1), currentDirection(right), objectMoveTimer(new QTimer()),
+    sizeShift(5), myBrush(Qt::white), movableDirections(0), coordinatesChanged(false)
 {
     setTransformOriginPoint(size/2, size/2);
     objectMoveTimer->setSingleShot(false);
@@ -23,78 +21,110 @@ QRectF MovingObject::boundingRect() const
 
 void MovingObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setBrush(*new QBrush(Qt::white));
+    painter->setBrush(myBrush);
     painter->drawRect(boundingRect());
 }
 
 void MovingObject::manageDirections()
 {
-    std::set<int> movableDirections;
-    if(xCoordinate != 25 && board[yCoordinate][xCoordinate + 1] != 0)
-        movableDirections.insert(possibleDirections::right);
-    if(xCoordinate != 0 && board[yCoordinate][xCoordinate - 1] != 0)
-        movableDirections.insert(possibleDirections::left);
-    if(yCoordinate != 25 && board[yCoordinate + 1][xCoordinate] != 0)
-        movableDirections.insert(possibleDirections::down);
-    if(yCoordinate != 0 && board[yCoordinate - 1][xCoordinate] != 0)
-        movableDirections.insert(possibleDirections::up);
-    if( movableDirections.find(nextDirection) != movableDirections.end())
-        currentDirection = nextDirection;
+    movableDirections.clear();
+    if(xCoordinate != 25 && boolBoard[yCoordinate][xCoordinate + 1] != 0)
+        movableDirections.push_back(possibleDirections::right);
+    if(xCoordinate != 0 && boolBoard[yCoordinate][xCoordinate - 1] != 0)
+        movableDirections.push_back(possibleDirections::left);
+    if(yCoordinate != 25 && boolBoard[yCoordinate + 1][xCoordinate] != 0)
+        movableDirections.push_back(possibleDirections::down);
+    if(yCoordinate != 0 && boolBoard[yCoordinate - 1][xCoordinate] != 0)
+        movableDirections.push_back(possibleDirections::up);
+}
 
+void MovingObject::stopMoving()
+{
+    objectMoveTimer->stop();
+}
 
+void MovingObject::startMoving()
+{
+    if(!objectMoveTimer->isActive())
+        objectMoveTimer->start();
 }
 
 void MovingObject::move()
 {
-    switch (currentDirection) {
-    case right:
-        if(xCoordinate == 25 || board[yCoordinate][xCoordinate + 1] == 0) {
-            currentDirection = nextDirection;
-            return;
+    if(coordinatesChanged) {
+        coordinatesChanged = false;
+        switch (currentDirection) {
+        case right:
+            if(yCoordinate == 13 && xCoordinate == 25) {
+                break;
+            }
+            if(xCoordinate == 25 || boolBoard[yCoordinate][xCoordinate + 1] == 0) {
+                manageDirections();
+                coordinatesChanged = true;
+                return;
+            }
+            setRotation(0);
+            xDirection = 1;
+            yDirection = 0;
+            break;
+        case left:
+            if(yCoordinate == 13 && xCoordinate == 0) {
+                break;
+            }
+            if(xCoordinate == 0 || boolBoard[yCoordinate][xCoordinate - 1] == 0) {
+                manageDirections();
+                coordinatesChanged = true;
+                return;
+            }
+            setRotation(180);
+            xDirection = -1;
+            yDirection = 0;
+            break;
+        case up:
+            if(yCoordinate == 0 || boolBoard[yCoordinate - 1][xCoordinate] == 0) {
+                manageDirections();
+                coordinatesChanged = true;
+                return;
+            }
+            setRotation(-90);
+            yDirection = -1;
+            xDirection = 0;
+            break;
+        case down:
+            if(yCoordinate == 25 || boolBoard[yCoordinate + 1][xCoordinate] == 0) {
+                manageDirections();
+                coordinatesChanged = true;
+                return;
+            }
+            setRotation(90);
+            yDirection = 1;
+            xDirection = 0;
+            break;
         }
-        setRotation(0);
-        xDirection = 1;
-        yDirection = 0;
-        break;
-    case left:
-        if(xCoordinate == 0 || board[yCoordinate][xCoordinate - 1] == 0) {
-            currentDirection = nextDirection;
-            return;      
-        }
-        setRotation(180);
-        xDirection = -1;
-        yDirection = 0;
-        break;
-    case up:
-        if(yCoordinate == 0 || board[yCoordinate - 1][xCoordinate] == 0) {
-            currentDirection = nextDirection;
-            return;
-        }
-        setRotation(-90);
-        yDirection = -1;
-        xDirection = 0;
-        break;
-    case down:
-        if(yCoordinate == 25 || board[yCoordinate + 1][xCoordinate] == 0) {
-            currentDirection = nextDirection;
-            return;
-        }
-        setRotation(90);
-        yDirection = 1;
-        xDirection = 0;
-        break;
     }
     tempX += xDirection;
     tempY += yDirection;
     setPos(x() + xDirection, y() + yDirection);
     if(abs((double)tempX) == size){
-        tempX = 0;
-        xCoordinate += xDirection;
+        if(yCoordinate == 13 && xCoordinate == 25) {
+            xCoordinate = 0;
+            setX(0);
+        }
+        else if(yCoordinate == 13 && xCoordinate == 0) {
+            xCoordinate = 25;
+            setX(25 * size + size);
+        }
+        else{
+            tempX = 0;
+            xCoordinate += xDirection;
+        }
+        coordinatesChanged = true;
         manageDirections();
     }
     else if(abs((double)tempY) == size) {
         tempY = 0;
         yCoordinate += yDirection;
+        coordinatesChanged = true;
         manageDirections();
     }
 }

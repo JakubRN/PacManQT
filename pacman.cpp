@@ -13,23 +13,23 @@
 #define PACMAN_IMAGE_WIDTH 200
 #define ANGLE_MULTIPLICATION_UNIT 16
 #define OPEN_MOUTH_PACE 3
-
+#define REPETITION_TIMES 20
 void Pacman::manageSuperState()
 {
     objectMoveTimer->stop();
-    emit stopGhosts();
+    emit stopGhosts(REPETITION_TIMES * 80);
     colorChangeTimer->setInterval(80);
     colorChangeTimer->setSingleShot(false);
     connect(colorChangeTimer, SIGNAL(timeout()), this, SLOT(angrierPacman()));
     colorChangeTimer->start();
-
 }
 
 Pacman::Pacman(unsigned int x, unsigned int y, unsigned int size, QGraphicsItem *parent) : MovingObject(x, y, size, parent),
     pacmanStartAngle(30), pacmanSpanAngle(300),
     pacmanRotationMinimunAngle(5), pacmanRotationMaximumAngle(55), pacmanOpens(true), score(0), pacmanColor("#ffd800"),
-    superStateChangeFactor(0), colorChangeTimer(new QTimer()), pacmanIsRed(false)
+    superStateChangeFactor(0), colorChangeTimer(new QTimer()), pacmanIsRed(false), remainingTime(0), nextDirection(right)
 {
+    coordinatesChanged = true;
     setFlag(QGraphicsItem::ItemIsFocusable);
     QObject::connect(objectMoveTimer, SIGNAL(timeout()), this, SLOT(manageAngle()));
     QObject::connect(objectMoveTimer, SIGNAL(timeout()), this, SLOT(manageCollisions()));
@@ -68,9 +68,47 @@ void Pacman::managePressedKeys()
         case Qt::Key_Down:
             nextDirection = down;
             break;
+        case Qt::Key_Space:
+            emit pauseGame();
         }
     }
 }
+
+void Pacman::manageDirections()
+{
+    MovingObject::manageDirections();
+    for(auto &i : movableDirections) {
+        if( i == nextDirection) {
+            currentDirection = nextDirection;
+            return;
+        }
+    }
+}
+
+void Pacman::stopMoving()
+{
+    if(pacmanIsRed) {
+        remainingTime = colorChangeTimer->remainingTime();
+    }
+    colorChangeTimer->stop();
+    objectMoveTimer->stop();
+}
+
+void Pacman::startMoving()
+{
+    if(pacmanIsRed)
+        colorChangeTimer->start(remainingTime);
+    else if(superStateChangeFactor != 0)
+        colorChangeTimer->start();
+    if(superStateChangeFactor == 0)
+        objectMoveTimer->start();
+}
+
+int Pacman::getScore()
+{
+    return score;
+}
+
 
 void Pacman::manageCollisions()
 {
@@ -126,11 +164,11 @@ void Pacman::angrierPacman()
     superStateChangeFactor++;
     pacmanColor.setRgb(255, pacmanColor.green() - 10, pacmanColor.blue());
     update();
-    if(superStateChangeFactor == 20) {
+    if(superStateChangeFactor == REPETITION_TIMES) {
         pacmanIsRed = true;
         colorChangeTimer->stop();
         disconnect(colorChangeTimer, SIGNAL(timeout()), this, SLOT(angrierPacman()));
-        timeDelay = (double)timeDelay/1.7;
+        timeDelay = (double)timeDelay/1.5;
         objectMoveTimer->start(timeDelay);
         emit startGhosts();
         colorChangeTimer->setInterval(8000);
@@ -143,9 +181,10 @@ void Pacman::angrierPacman()
 
 void Pacman::normalPacman()
 {
-    timeDelay = 1.7 * timeDelay;
+    timeDelay = 1.5 * timeDelay;
     objectMoveTimer->start(timeDelay);
     pacmanColor = QColor("#ffd800");
+    colorChangeTimer->stop();
     disconnect(colorChangeTimer, SIGNAL(timeout()), this, SLOT(normalPacman()));
     pacmanIsRed = false;
 }

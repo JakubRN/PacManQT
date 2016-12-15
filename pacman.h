@@ -17,17 +17,24 @@ class Pacman : public MovingObject
     int superStateChangeFactor;
     QTimer *colorChangeTimer;
     bool pacmanIsRed;
-public:
+    int remainingTime;
+    possibleDirections nextDirection;
     int score;
+public:
     Pacman(unsigned int x, unsigned int y, unsigned int size, QGraphicsItem *parent = 0);
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void managePressedKeys();
+    void manageDirections() override;
+    void stopMoving() override;
+    void startMoving() override;
+    int getScore();
 signals:
     void scoreChanged();
-    void stopGhosts();
+    void stopGhosts(int);
     void startGhosts();
+    void pauseGame();
 public slots:
     void manageCollisions();
     void manageAngle();
