@@ -5,13 +5,17 @@
 #include <level.h>
 extern char boolBoard[26][26];
 MovingObject::MovingObject(unsigned int x, unsigned int y, unsigned int size, QGraphicsItem *parent) : GameObject(x, y, size, parent),
-    timeDelay((double)200 / (size)), tempX(0), tempY(0), xDirection(0), yDirection(-1), currentDirection(right), objectMoveTimer(new QTimer()),
+    timeDelay((double)200 / (size)), tempX(0), tempY(0), xDirection(0), yDirection(-1), currentDirection(possibleDirections::right), objectMoveTimer(),
     sizeShift(5), myBrush(Qt::white), movableDirections(0), coordinatesChanged(false)
 {
     setTransformOriginPoint(size/2, size/2);
-    objectMoveTimer->setSingleShot(false);
-    QObject::connect(objectMoveTimer, SIGNAL(timeout()), this, SLOT(move()));
-    objectMoveTimer->start(timeDelay);
+    objectMoveTimer.setSingleShot(false);
+    QObject::connect(&objectMoveTimer, SIGNAL(timeout()), this, SLOT(move()));
+    objectMoveTimer.start(timeDelay);
+}
+
+MovingObject::~MovingObject()
+{
 }
 
 QRectF MovingObject::boundingRect() const
@@ -21,6 +25,8 @@ QRectF MovingObject::boundingRect() const
 
 void MovingObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    UNUSED_ARG(option);
+    UNUSED_ARG(widget);
     painter->setBrush(myBrush);
     painter->drawRect(boundingRect());
 }
@@ -40,13 +46,12 @@ void MovingObject::manageDirections()
 
 void MovingObject::stopMoving()
 {
-    objectMoveTimer->stop();
+    objectMoveTimer.stop();
 }
 
 void MovingObject::startMoving()
 {
-    if(!objectMoveTimer->isActive())
-        objectMoveTimer->start();
+        objectMoveTimer.start(timeDelay);
 }
 
 void MovingObject::move()
@@ -54,7 +59,7 @@ void MovingObject::move()
     if(coordinatesChanged) {
         coordinatesChanged = false;
         switch (currentDirection) {
-        case right:
+        case possibleDirections::right:
             if(yCoordinate == 13 && xCoordinate == 25) {
                 break;
             }
@@ -67,7 +72,7 @@ void MovingObject::move()
             xDirection = 1;
             yDirection = 0;
             break;
-        case left:
+        case possibleDirections::left:
             if(yCoordinate == 13 && xCoordinate == 0) {
                 break;
             }
@@ -80,7 +85,7 @@ void MovingObject::move()
             xDirection = -1;
             yDirection = 0;
             break;
-        case up:
+        case possibleDirections::up:
             if(yCoordinate == 0 || boolBoard[yCoordinate - 1][xCoordinate] == 0) {
                 manageDirections();
                 coordinatesChanged = true;
@@ -90,7 +95,7 @@ void MovingObject::move()
             yDirection = -1;
             xDirection = 0;
             break;
-        case down:
+        case possibleDirections::down:
             if(yCoordinate == 25 || boolBoard[yCoordinate + 1][xCoordinate] == 0) {
                 manageDirections();
                 coordinatesChanged = true;

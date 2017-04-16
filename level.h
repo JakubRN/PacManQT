@@ -1,6 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include<QKeyEvent>
 #include <Qt>
 #include <QWidget>
 #include <QPushButton>
@@ -41,22 +42,40 @@ class Level : public QWidget
     int Score;
     bool stopOrNot;
     std::unique_ptr<Pacman>mainPacman;
-    Ghost blueGhost;
-    Ghost redGhost;
-    Ghost orangeGhost;
-    Ghost pinkGhost;
+    std::unique_ptr<Ghost> blueGhost;
+    std::unique_ptr<Ghost> redGhost;
+    std::unique_ptr<Ghost> orangeGhost;
+    std::unique_ptr<Ghost> pinkGhost;
+    QTimer ghostTimer;
+    bool gameOver;
+    QTimer resetTimer;
+    std::vector<QWidget *> pacmans;
+    QGraphicsTextItem hintText;
+    bool hintBarHidden;
+
+    std::set<int> keyPressed;
+
     QLabel *getLabel(QString &input);
     void createLayout();
     void createBoard();
     void addMovingItems();
-public:
-    explicit Level(int w, int h, QWidget *parent = 0);
+    void createHintText();
     QPushButton *initButton(const char *myString);
     bool gameStopped();
     void stopGhosts();
+    void pacmanNoticed();
+    void addLives();
+    void resetLives();
+    void levelPassed();
+public:
+    explicit Level(int w, int h, QWidget *parent = 0);
 signals:
     void coinWasEaten();
 public slots:
+    void hideHintBar();
+    void resetMovingObjects();
+    void pacmanPosPropagation();
+    void restartGhost(Ghost *);
     void waitForIt(int);
     void increaseScore();
     void pauseGame();
@@ -64,6 +83,11 @@ public slots:
     void managePausedGame();
     void returnToMainMenu();
     void startGhosts();
+    void endGame();
+    void positionCheck();
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+    void managePressedKeys();
 
 };
 

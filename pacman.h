@@ -3,6 +3,7 @@
 #include "movingobject.h"
 #include <set>
 #include <QColor>
+#include "ghost.h"
 class Pacman : public MovingObject
 {
     Q_OBJECT
@@ -11,35 +12,46 @@ class Pacman : public MovingObject
     const int pacmanRotationMinimunAngle;
     const int pacmanRotationMaximumAngle;
     bool pacmanOpens;
-    std::set<int> keyPressed;
-    void manageSuperState();
+    int score;
     QColor pacmanColor;
     int superStateChangeFactor;
-    QTimer *colorChangeTimer;
+    QTimer colorChangeTimer;
     bool pacmanIsRed;
     int remainingTime;
     possibleDirections nextDirection;
-    int score;
+
+    int ghostEatCount;
+    QTimer resetTimer;
+    QTimer redStateTimer;
+    void manageSuperState();
 public:
+    bool pacmanIsResetting;
     Pacman(unsigned int x, unsigned int y, unsigned int size, QGraphicsItem *parent = 0);
+    ~Pacman();
+    QPainterPath shape() const override;
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0) override;
-    void keyPressEvent(QKeyEvent *event) override;
-    void keyReleaseEvent(QKeyEvent *event) override;
-    void managePressedKeys();
     void manageDirections() override;
     void stopMoving() override;
     void startMoving() override;
     int getScore();
+    bool getRedState();
+    void resetPacman(unsigned int x, unsigned int y);
+    bool pacmanChangingColor();
+    int getRemainingTime();
+    void setNextDirection(possibleDirections dir);
 signals:
+    void positionChanged();
+    void ghostEaten(Ghost *);
+    void gameOver();
     void scoreChanged();
     void stopGhosts(int);
     void startGhosts();
-    void pauseGame();
 public slots:
     void manageCollisions();
     void manageAngle();
     void angrierPacman();
     void normalPacman();
+    void focusPacman();
 };
 
 #endif // PACMAN_H

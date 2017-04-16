@@ -7,6 +7,8 @@ Wall::Wall(unsigned int x, unsigned int y, int size, GameObject *parent) : GameO
 
 void Wall::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    UNUSED_ARG(option);
+    UNUSED_ARG(widget);
     painter->setPen(QPen(QBrush(Qt::black), 0));
     painter->setBrush(*new QBrush(Qt::black));
     int tempX, tempY, tempDestX, tempDestY;
